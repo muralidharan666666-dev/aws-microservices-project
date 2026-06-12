@@ -282,46 +282,42 @@ for anything.
 
 ## What I Learned
 
-**I kept seeing microservices mentioned in every AWS
-job description but never really got what it meant
-until I built this.
+Before this project I used to wonder how apps like
+Amazon and Flipkart keep working even when one part
+of their system has a problem. If the cart goes down
+why does the product page still work? If the payment
+system is slow why does browsing not slow down? I
+did not understand how they kept everything separate.
 
-Once I deployed two separate services on AWS it
-clicked. The product service and cart service have
-their own code, their own container, their own
-database, and scale on their own. When one breaks
-the other keeps going. I could not have explained
-that before. Now I can.
+Building this showed me exactly how. The product
+service and cart service I built never talk to each
+other directly. Each has its own container, its own
+database, and its own scaling. When my cart service
+had a health check failure during deployment my
+product service kept serving requests without even
+knowing there was a problem. That separation is
+what microservices actually means. I could not have
+explained it this way before building it.
 
-The debugging part taught me the most. With ECS
-Fargate there is no server to log into. When my
-cart service kept showing Draining I had to figure
-it out through CloudWatch logs and security group
-rules alone. Logs said the container was fine.
-Health check settings were fine. Then I found it
--- I never added port 5001 to the security group.
-One missing rule was blocking everything. Now I
-always check security groups first when something
-is not working in AWS.
-
-I had also heard defense in depth before but never
-really understood it. After setting up the Load
-Balancer in public subnets, containers in private
-subnets, security groups allowing only ALB traffic,
-and IAM roles with just enough permissions -- it
-made sense. Each layer covers the gap the previous
-one leaves. I got that only by building it myself.**
----
+The other thing I will not forget is the debugging.
+When my cart containers kept showing as Draining I
+had no way to log into the server and check -- there
+is no server with Fargate. I had to use CloudWatch
+logs, check health check settings, and go through
+security group rules one by one. The logs showed
+the container was healthy. The health check settings
+were correct. Then I found it -- I had never added
+port 5001 to the security group when I set it up
+for the product service. One missing rule was
+blocking every single health check from reaching
+the container.
 
 ## Future Improvements
 
 ### Terraform
 Recreate the entire infrastructure using Terraform so everything
 that was built manually through the console is defined as code.
-This is something the project guide specifically recommends --
-build through the console first to understand each service, then
-write it as Infrastructure as Code. The Terraform code will go
-in a /terraform folder in this same repository.
+
 
 ### CI/CD with GitHub Actions
 Add a GitHub Actions workflow so every git push automatically
