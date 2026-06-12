@@ -282,23 +282,35 @@ for anything.
 
 ## What I Learned
 
-Before this project I thought microservices just meant splitting
-an app into smaller pieces. Building this showed me that true
-microservices means each service is completely independent --
-its own codebase, its own container, its own database, its own
-scaling policy.
+**I kept seeing microservices mentioned in every AWS
+job description but never really got what it meant
+until I built this.
 
-The security group debugging taught me something I will never
-forget. When something is not working in AWS the problem is
-almost always permissions or security groups. Checking logs
-first tells you if the application is healthy. If the app is
-healthy but traffic is still not reaching it -- check the
-security group.
+Once I deployed two separate services on AWS it
+clicked. The product service and cart service have
+their own code, their own container, their own
+database, and scale on their own. When one breaks
+the other keeps going. I could not have explained
+that before. Now I can.
 
-The two IAM roles confused me until I built this. Now when
-someone asks me about ECS IAM I can explain it clearly because
-I hit the exact error that happens when you get it wrong.
+The debugging part taught me the most. With ECS
+Fargate there is no server to log into. When my
+cart service kept showing Draining I had to figure
+it out through CloudWatch logs and security group
+rules alone. Logs said the container was fine.
+Health check settings were fine. Then I found it
+-- I never added port 5001 to the security group.
+One missing rule was blocking everything. Now I
+always check security groups first when something
+is not working in AWS.
 
+I had also heard defense in depth before but never
+really understood it. After setting up the Load
+Balancer in public subnets, containers in private
+subnets, security groups allowing only ALB traffic,
+and IAM roles with just enough permissions -- it
+made sense. Each layer covers the gap the previous
+one leaves. I got that only by building it myself.**
 ---
 
 ## Future Improvements
