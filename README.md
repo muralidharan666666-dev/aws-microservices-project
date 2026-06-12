@@ -1,4 +1,4 @@
-# AWS Containerized Microservices Project
+# Containerized Microservices on AWS ECS Fargate
 
 I built this project to understand how large applications like Amazon
 and Flipkart run their backend services independently without one
